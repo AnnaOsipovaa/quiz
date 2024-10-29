@@ -1,0 +1,82 @@
+.answers__pre-title{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.answers__pre-title-arrow{
+    width: 15px;
+    height: 8px;
+    margin-bottom: 14px;
+}
+
+.answers__pre-title-arrow-img{
+    max-width: 100%;
+    transform: rotate(270deg);
+}
+
+.answers__pre-title-test-level{
+    font-size: 20px;
+    color: var(--text-color2);
+}
+
+.answers__title{
+    margin-top: 60px;
+    font-family: "Museo Sans Cyrl Bold", sans-serif;
+    font-size: 54px;
+}
+
+.answers-item{
+    margin-top: 60px;
+}
+
+.answers-item__title{
+    font-family: "Museo Sans Cyrl Bold", sans-serif;
+    font-size: 36px;
+    margin-bottom: 40px;
+}
+
+.test__answer-options-text{
+    font-size: 20px;
+}
+
+.test__answer-options-marker.mistake-answer{
+    border-color: var(--check-error-color);
+    border-width: 6px;
+}
+
+.test__answer-options-marker.correct-answer{
+    border-color: var(--check-right-color);
+    border-width: 6px;
+}
+
+.test__answer-options-marker.mistake-answer ~ .test__answer-options-text{
+    color: var(--check-error-color);
+}
+
+.test__answer-options-marker.correct-answer ~ .test__answer-options-text{
+    color: var(--check-right-color);
+}
+
+.answers__who{
+    margin-top: 10px;
+    font-size: 20px;
+    line-height: 24px;
+}
+
+input[type=radio]:checked::before{
+    transform: scale(0);
+}
+
+.answers__back{
+    margin-top: 60px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.answers__back-arrow{
+    margin-top: 5px;
+}

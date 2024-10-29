@@ -1,0 +1,50 @@
+.result{
+    padding-top: 140px;
+    padding-bottom: 91px;
+    text-align: center;
+}
+
+.result__container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.result__fon{
+    position: absolute;
+    top: 85px; 
+    z-index: -1;
+}
+
+.result__title{
+    font-family: "Museo Sans Cyrl Bold", sans-serif;
+    font-size: 54px;
+    line-height: 64.8px;
+    max-width: 588px;
+    margin-bottom: 60px;
+}
+
+.result__number{
+    font-family: "Museo Sans Cyrl Bold", sans-serif;
+    background-image: url('.././img/rezult-img.png');
+    background-size: cover;
+    background-position: center;
+    width: 480px;
+    height: 387px;
+    font-size: 158px;
+    line-height: 371.6px;
+    color: white;
+}
+
+.result__answers{
+    margin-top: 76px;
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.result__answers-arrow{
+    margin-top: 6px;
+}

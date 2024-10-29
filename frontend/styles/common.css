@@ -1,0 +1,238 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Museo Sans Cyrl", sans-serif;
+}
+
+@font-face {
+    font-family: "Museo Sans Cyrl";
+    src: url('../fonts/MuseoSansCyrl500.ttf');
+}
+
+@font-face {
+    font-family: "Museo Sans Cyrl Bold";
+    src: url('../fonts/MuseoSansCyrl700.ttf');
+}
+
+:root {
+    --color1: #DCDCF3;
+    --text-color1: #333333;
+    --text-color2: #6933DC;
+    --text-color3: #4c23a6;
+    --text-color4: #333333;
+    --border-color: #C1BBBB;
+    --check-right-color: #5fdc33;
+    --check-error-color: #dc3333;
+
+
+    --text-color2-disabled: #e2dfe7;
+}
+
+a {
+    color: var(--text-color2);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header {
+    padding-top: 42px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--color1);
+}
+
+.title {
+    font-size: 48px;
+    font-family: "Museo Sans Cyrl Bold", sans-serif;
+}
+
+.text_purple {
+    color: var(--text-color2);
+    font-family: "Museo Sans Cyrl Bold", sans-serif;
+}
+
+.title-min{
+    font-size: 20px;
+    line-height: 24px;
+    color: var(--color1);
+    font-weight: 400;
+}
+
+.link{
+    text-decoration: none;
+    font-size: 17px;
+    color: var(--text-color2);
+    margin-right: 13px;
+    transition: 0.4s;
+}
+
+.link:hover{
+    text-decoration: underline;
+}
+
+.options-item{
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 20px;
+}
+
+input[type=radio]{
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 3px solid var(--text-color2);
+    border-radius: 50%;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+}
+
+input[type=radio]::before{
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: inset 10px 10px var(--text-color2);
+    transition: 0.2s;
+    transform: scale(0);
+}
+
+input[type=radio]:checked::before{
+    transform: scale(1);
+}
+
+.btn {
+    border-radius: 6px;
+    font-size: 17px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn_transparent {
+    color: var(--text-color2);
+    border: 1px solid var(--text-color2);
+    background: transparent;
+    transition: 0.3s;
+}
+
+.btn_transparent:hover {
+    color: white;
+    background: var(--text-color2);
+}
+
+.btn_purple {
+    background: var(--text-color2);
+    color: white;
+    transition: 0.4s;
+}
+
+.btn_purple:hover {
+    background: var(--text-color3);
+}
+
+.btn:disabled {
+    background: var(--border-color);
+    cursor: not-allowed;
+}
+
+.btn_transparent:disabled {
+    color: white;
+    border: 1px solid white;
+}
+
+.header__container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header__user{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.header__user-icon > img{
+    width: 33px;
+    height: 33px;
+}
+
+.header__user-info-name{
+    font-size: 18px;
+    color: var(--text-color1);
+    line-height: 21.6px;
+}
+
+.footer {
+    padding: 40px 0;
+}
+
+.footer__text {
+    text-align: center;
+    color: var(--color1);
+    font-size: 13px;
+}
+
+@media screen and (max-width: 1250px){
+    body{
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .container{
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+    .header{
+        padding-top: 25px;
+        padding-bottom: 25px;
+    }
+}
+
+@media screen and (max-width: 537px){
+    .title {
+        font-size: 43px;
+    }
+}
+
+@media screen and (max-width: 490px){
+    .header {
+        padding-top: 17px;
+        padding-bottom: 17px;
+    }
+    .logo{
+        max-width: 200px;
+    }
+    .logo-img{
+        max-width: 100%;
+    }
+    .title {
+        font-size: 36px;
+    }
+}
+
+@media screen and (max-width: 418px){
+    .title {
+        font-size: 31px;
+    }
+}
+
+@media screen and (max-width: 415px){
+    .btn {
+        font-size: 15px;
+    }
+    .description-btn {
+        padding: 11px 28px;
+    }
+}
+
+@media screen and (max-width: 366px){
+    .title {
+        font-size: 26px;
+    }
+}

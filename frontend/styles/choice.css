@@ -1,0 +1,106 @@
+.choice{
+    padding-top: 180px;
+    padding-bottom: 227px;
+}
+
+.choice__container{
+    display: flex;
+    align-items: center;
+    gap: 107px
+}
+
+.choice__content{
+    max-width: 583px;
+}
+
+.choice__text{
+    margin-top: 40px;
+    font-size: 18px;
+    line-height: 21px;
+}
+
+.choice__actions{
+    margin-top: 60px;
+    cursor: pointer;
+    width: 583px;
+}
+
+.actions-item{
+    position: relative;
+    padding: 26px 70px 26px 40px;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    position: relative;
+    transition: 0.4s;
+}
+
+.actions-item:hover{
+    border-left: 5px solid var(--text-color2);
+    color: var(--text-color2);
+}
+
+.actions-item__text{
+    font-size: 18px;
+    line-height: 21px;
+}
+
+.actions-item:hover .actions-item__text{
+    font-family: "Museo Sans Cyrl Bold", sans-serif;
+    color: var(--text-color2);
+}
+
+.actions-item__arrow{
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+}
+
+.actions-item:hover .actions-item__arrow{
+    display: block;
+}
+
+.actions-item__result{
+    position: absolute;
+    right: 18px;
+    top: 16px;
+    border: 1px solid var(--text-color2);
+    color: var(--text-color2);
+    font-size: 12px;
+    line-height: 14px;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.actions-item:hover .actions-item__result{
+    display: none;
+}
+
+.choice__img-image{
+    max-width: 100%;
+}
+
+
+@media screen and (max-width: 1200px){
+    .choice {
+        padding-top: 30px;
+        padding-bottom: 110px;
+    }
+    .choice__container {
+        gap: 65px;
+        flex-direction: column-reverse;
+    }
+    .choice__content {
+        text-align: center;
+    }
+    .choice__img{
+        max-width: 340px;
+    }
+}
+
+@media screen and (max-width: 600px){
+    .choice__content {
+        max-width: 100%;
+    }
+}

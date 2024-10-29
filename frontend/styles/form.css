@@ -1,0 +1,153 @@
+.form{
+    padding-top: 140px;
+    padding-bottom: 122px;
+}
+
+.container__form{
+    display: flex;
+    align-items: center;
+    gap: 146px;
+}
+
+.form__content{
+    max-width: 504px;
+}
+
+.form__ditails{
+    margin-top: 60px;
+    max-width: 485px;
+}
+
+.form-group{
+    border: 1px solid var(--border-color);
+    padding: 12px 23px;
+    width: 485px;
+    height: 74px;
+    box-sizing: border-box;
+    position: relative;
+    transition: 0.2s;
+}
+
+.form-group__input{
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    font-size: 18px;
+    color: var(--text-color2);
+    font-family: "Museo Sans Cyrl Bold", sans-serif;
+}
+
+.form-group__label{
+    font-size: 18px;
+    color: var(--text-color4);
+    position: absolute;
+    left: 23px;
+    top: 26px;
+    transition: 0.2s;
+}
+
+.form-group__input:focus ~ .form-group__label,
+.form-group__input:not(:focus):valid ~ .form-group__label{
+    top: 12px;
+}
+
+.form-group__input:focus,
+.form-group__input:valid{
+    margin-top: 27px;
+    height: auto;
+}
+
+.form-group:focus-within{
+    border-left: 5px solid var(--text-color2);
+}
+.form-agree{
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.form-agree__input{
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.form-agree__label{
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.form__button{
+    margin-top: 30px;
+}
+
+.form__btn{
+    padding: 14px 35px;
+}
+
+.form-link{
+    margin-top: 15px;
+    font-size: 12px;
+}
+
+@media screen and (max-width: 1200px){
+    .form {
+        padding-top: 60px;
+        padding-bottom: 40px;
+    }
+    .container__form {
+        justify-content: center;
+    }
+    .form__img{
+        display: none;
+    }
+}
+
+@media screen and (max-width: 680px){
+    .form__content {
+        max-width: 100%;
+    }
+    .form-group {
+        height: 65px;
+        max-width: 100%;
+    }
+    .form-group__label {
+        top: 22px;
+    }
+    .form-group__input:focus, 
+    .form-group__input:valid {
+        margin-top: 19px;
+    }
+    .form-group__input:focus ~ .form-group__label, 
+    .form-group__input:not(:focus):valid ~ .form-group__label {
+        top: 9px;
+    }
+    .form__ditails {
+        margin-top: 40px;
+    }
+}
+
+@media screen and (max-width: 470px){
+    .form__ditails {
+        margin-top: 27px;
+    }
+    .form-group {
+        height: 54px;
+    }
+    .form-group__label {
+        top: 15px;
+        font-size: 16px;
+    }
+    .form-group__input {
+        font-size: 16px;
+    }
+    .form-group__input:focus ~ .form-group__label, 
+    .form-group__input:not(:focus):valid ~ .form-group__label {
+        top: 6px;
+    }
+    .form-group__input:focus, 
+    .form-group__input:valid {
+        margin-top: 14px;
+    }
+}
