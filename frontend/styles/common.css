@@ -89,6 +89,7 @@ input[type=radio]{
     display: grid;
     place-content: center;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 input[type=radio]::before{
@@ -192,6 +193,47 @@ input[type=radio]:checked::before{
         padding-top: 25px;
         padding-bottom: 25px;
     }
+    .title-min {
+        font-size: 18px;
+    }
+}
+
+@media screen and (max-width: 900px){
+    .title-min {
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 770px){
+    .container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .btn {
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 670px){
+    .title-min {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 650px){
+    .header__user-icon > img {
+        width: 23px;
+        height: 23px;
+    }
+    .header__user-info-name {
+        font-size: 16px;
+    }
+    .header__user-info-action{
+        font-size: 14px;
+    }
+    .link {
+        font-size: 16px;
+    }
 }
 
 @media screen and (max-width: 537px){
@@ -214,9 +256,23 @@ input[type=radio]:checked::before{
     .title {
         font-size: 36px;
     }
+    .link {
+        font-size: 14px;
+    }
 }
 
 @media screen and (max-width: 418px){
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    .logo {
+        max-width: 140px;
+    }
+    .header__user-info-name {
+        font-size: 14px;
+        line-height: 1;
+    }
     .title {
         font-size: 31px;
     }
@@ -224,7 +280,7 @@ input[type=radio]:checked::before{
 
 @media screen and (max-width: 415px){
     .btn {
-        font-size: 15px;
+        font-size: 14px;
     }
     .description-btn {
         padding: 11px 28px;

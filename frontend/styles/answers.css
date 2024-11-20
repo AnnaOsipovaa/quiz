@@ -80,3 +80,106 @@ input[type=radio]:checked::before{
 .answers__back-arrow{
     margin-top: 5px;
 }
+
+@media screen and (max-width: 1200px){
+    .answers__title {
+        margin-top: 45px;
+        font-size: 43px;
+    }
+    .answers__who {
+        margin-top: 5px;
+        font-size: 18px;
+        line-height: 20px;
+    }
+    .answers__pre-title-test-level {
+        font-size: 18px;
+    }
+    .answers-item__title {
+        font-size: 30px;
+        margin-bottom: 20px;
+    }
+    .test__answer-options-text {
+        font-size: 18px;
+    }
+    .answers-item {
+        margin-top: 50px;
+    }
+    .options-item {
+        gap: 11px;
+        margin-bottom: 15px;
+    }
+}
+
+@media screen and (max-width: 1000px){
+    .answers__title {
+        margin-top: 36px;
+        font-size: 38px;
+    }
+    .answers-item__title {
+        font-size: 26px;
+        margin-bottom: 14px;
+    }
+    .test__answer-options-text {
+        font-size: 16px;
+    }
+    .answers-item {
+        margin-top: 40px;
+    }
+    .options-item {
+        margin-bottom: 14px;
+    }
+}
+
+@media screen and (max-width: 900px){
+    .answers__pre-title {
+        gap: 8px;
+    }
+    .answers__pre-title-test-level {
+        font-size: 16px;
+    }
+    .answers__title {
+        margin-top: 28px;
+        font-size: 30px;
+    }
+    .answers__who {
+        font-size: 16px;
+    }
+    .answers-item__title {
+        font-size: 22px;
+        margin-bottom: 14px;
+    }
+    .test__answer-options-text {
+        font-size: 14px;
+    }
+    .answers-item {
+        margin-top: 30px;
+    }
+    .options-item {
+        margin-bottom: 11px;
+    }
+}
+
+@media screen and (max-width: 670px){
+    .answers__pre-title-test-level{
+        font-size: 14px;
+    }
+    .answers__title {
+        margin-top: 23px;
+        font-size: 25px;
+    }
+    .answers__who {
+        font-size: 14px;
+        line-height: 11px;
+    }
+    .answers-item__title {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+    .options-item {
+        margin-bottom: 9px;
+    }
+}
+
+@media screen and (max-width: 480px){
+
+}

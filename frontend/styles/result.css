@@ -17,6 +17,10 @@
     z-index: -1;
 }
 
+.result__fon > img{
+    max-width: 100%;
+}
+
 .result__title{
     font-family: "Museo Sans Cyrl Bold", sans-serif;
     font-size: 54px;
@@ -43,8 +47,91 @@
     cursor: pointer;
     align-items: center;
     justify-content: flex-end;
+    margin-right: 10px;
 }
 
 .result__answers-arrow{
     margin-top: 6px;
+}
+
+@media screen and (max-width: 900px){
+    .result__number {
+        width: 439px;
+        height: 353px;
+        font-size: 127px;
+        line-height: 359.6px;
+    }
+    .result__title {
+        font-size: 49px;
+        line-height: 57.8px;
+    }
+}
+
+@media screen and (max-width: 700px){
+    .result {
+        padding-top: 33px;
+        padding-bottom: 33px;
+    }
+    .result__number {
+        width: 401px;
+        height: 325px;
+        font-size: 116px;
+        line-height: 330.6px;
+    }
+    .result__title {
+        font-size: 46px;
+        line-height: 53.8px;
+    }
+}
+
+@media screen and (max-width: 560px){
+.result__number {
+        width: 313px;
+        height: 261px;
+        font-size: 95px;
+        line-height: 274.6px;
+    }
+    .result__title {
+        font-size: 40px;
+        line-height: 43.8px;
+    }
+}
+
+@media screen and (max-width: 475px){
+    .result__number {
+        width: 273px;
+        height: 221px;
+        font-size: 78px;
+        line-height: 224.6px;
+    }
+    .result__title {
+        font-size: 34px;
+        line-height: 38.8px;
+    }
+}
+
+@media screen and (max-width: 398px){
+    .result__number {
+        width: 229px;
+        height: 188px;
+        font-size: 64px;
+        line-height: 187.6px;
+    }
+    .result__title {
+        font-size: 29px;
+        line-height: 31.8px;
+    }
+}
+
+@media screen and (max-width: 356px){
+    .result__number {
+        width: 196px;
+        height: 163px;
+        font-size: 57px;
+        line-height: 164.6px;
+    }
+    .result__title {
+        font-size: 26px;
+        line-height: 25.8px;
+    }
 }
