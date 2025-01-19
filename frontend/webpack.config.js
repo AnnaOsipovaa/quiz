@@ -3,7 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-    entry: './src/app.js',
+    entry: './src/app.ts',
+    devtool: 'inline-source-map',
     mode: 'development',
     output: {
         filename: 'main.js',
@@ -27,21 +28,17 @@ module.exports = {
                 { from: './static/img', to: 'img' },
             ],
         }),
-    ],/*
+    ],
     module: {
         rules: [
             {
-                test: /\.js$/,
+                test: /\.tsx?$/,
+                use: 'ts-loader',
                 exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: [
-                            ['@babel/preset-env', { targets: "defaults" }]
-                        ]
-                    }
-                }
-            }
-        ]
-    }*/
+            },
+        ],
+    },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js'],
+    }
 };
