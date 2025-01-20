@@ -30,7 +30,6 @@ export class Choice {
                     if ((result as DefaultResponseType).error !== undefined) {
                         throw new Error((result as DefaultResponseType).message);
                     }
-
                     this.testResult = result as TestResultType[];
                 }
             } catch (error) {
@@ -85,7 +84,7 @@ export class Choice {
         }
     }
 
-    private chooseQuize(element: HTMLElement) {
+    private chooseQuize(element: HTMLElement): void{
         const testId: string | null = element.getAttribute('data-id');
         if (testId) {
             location.href = "#/test?id=" + testId;

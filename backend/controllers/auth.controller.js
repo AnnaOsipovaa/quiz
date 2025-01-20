@@ -11,7 +11,7 @@ class AuthController {
             const {error} = ValidationUtils.signupValidation(req.body);
 
             if (error) {
-                return res.status(400).json({error: error.details[0].message});
+                return res.status(400).json({error: true, message: error.details[0].message});
             }
 
             let user = UserModel.findOne({email: req.body.email});
@@ -54,7 +54,7 @@ class AuthController {
             const {error} = ValidationUtils.loginValidation(req.body);
 
             if (error) {
-                return res.status(400).json({error: error.details[0].message});
+                return res.status(400).json({error:true, message: error.details[0].message});
             }
 
             const user = UserModel.findOne({email: req.body.email});

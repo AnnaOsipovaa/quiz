@@ -1,33 +1,52 @@
-import { CustomHttp } from '../services/custom-http.js';
-import config from "../../config/config.js";
-import { UrlManager } from '../utils/url-manager.js';
-import { Auth } from '../services/auth.js';
+import { CustomHttp } from '../services/custom-http';
+import config from "../../config/config";
+import { UrlManager } from '../utils/url-manager';
+import { Auth } from '../services/auth';
+import { QuizAnswersType, QuizQuestionType, QuizType } from '../types/quiz.type';
+import { UserResultType } from '../types/user-result.type';
+import { DefaultResponseType } from '../types/default-response.type';
+import { ActionTestType } from '../types/action-test.type';
+import { UserInfoType } from '../types/user-info.type';
+import { PassTestResponseType } from '../types/pass-test-pesponse.type';
 
 export class Test {
+    private quiz: QuizType | null;
+    private answerOptions: HTMLElement | null;
+    readonly userResult: UserResultType[] | null;
+    private testTitleElement: HTMLElement | null;
+    private testQuestionTitle: HTMLElement | null;
+    private currentQuestionIndex: number;
+    private nextButtonElement: HTMLElement | null;
+    private prevButtonElement: HTMLElement | null;
+    private passLinkElement: HTMLElement | null;
+    private progressBarElement: HTMLElement | null;
+    private testId: string | null;
+    private interval: number = 0;
+
     constructor() {
         this.quiz = null;
         this.currentQuestionIndex = 1;
-        this.testTitle = null;
+        this.testTitleElement = null;
         this.testQuestionTitle = null;
         this.answerOptions = null;
         this.nextButtonElement = null;
         this.prevButtonElement = null;
         this.passLinkElement = null;
-        this.userResult = [];
+        this.userResult = null;
         this.progressBarElement = null;
         this.testId = UrlManager.getQueryParams('id');
         this.init();
     }
 
-    async init() {
+    private async init(): Promise<void> {
         if (this.testId) {
             try {
-                const result = await CustomHttp.request(config.host + '/tests/' + this.testId);
+                const result: DefaultResponseType | QuizType = await CustomHttp.request(config.host + '/tests/' + this.testId);
                 if (result) {
-                    if (result.error) {
-                        throw new Error();
+                    if ((result as DefaultResponseType).error !== undefined) {
+                        throw new Error((result as DefaultResponseType).message);
                     }
-                    this.quiz = result;
+                    this.quiz = result as QuizType;
                     this.startQuiz();
                 }
             } catch (error) {
@@ -36,59 +55,88 @@ export class Test {
         }
     }
 
-    startQuiz() {
+    private startQuiz(): void {
+        if (!this.quiz) return;
+
         this.testQuestionTitle = document.getElementById('question-title');
 
-        this.testTitle = document.getElementById('test-title');
-        this.testTitle.innerText = this.quiz.name;
+        this.testTitleElement = document.getElementById('test-title');
+        if (this.testTitleElement) {
+            this.testTitleElement.innerText = this.quiz.name;
+        }
 
         this.answerOptions = document.getElementById('answer-options');
         this.nextButtonElement = document.getElementById('nextButton');
-        this.nextButtonElement.onclick = this.move.bind(this, 'next');
+        if (this.nextButtonElement) {
+            this.nextButtonElement.onclick = this.move.bind(this, ActionTestType.next);
+        }
 
         this.passLinkElement = document.getElementById('passLink');
-        this.passLinkElement.onclick = this.move.bind(this, 'pass');
+        if (this.passLinkElement) {
+            this.passLinkElement.onclick = this.move.bind(this, ActionTestType.pass);
+        }
 
         this.prevButtonElement = document.getElementById('prevButton');
-        this.prevButtonElement.onclick = this.move.bind(this, 'prev');
+        if (this.prevButtonElement) {
+            this.prevButtonElement.onclick = this.move.bind(this, ActionTestType.prev);
+        }
 
         this.progressBarElement = document.getElementById('progress-bar');
         this.prepareProgressBar();
         this.showQuestion();
 
-        let seconds = 59;
-        const timerElement = document.getElementById('timer');
-        timerElement.innerText = seconds;
-        this.interval = setInterval(function () {
+        let seconds: number = 59;
+
+        const timerElement: HTMLElement | null = document.getElementById('timer');
+        if (timerElement) {
+            timerElement.innerText = seconds.toString();
+        }
+
+        const that: Test = this;
+
+        this.interval = window.setInterval(function () {
             seconds--;
-            timerElement.innerText = seconds;
+
+            if (timerElement) {
+                timerElement.innerText = seconds.toString();
+            }
+
             if (seconds === 0) {
-                clearInterval(this.interval);
-                this.complete();
+                clearInterval(that.interval);
+                that.complete();
             }
         }.bind(this), 1000);
     }
 
-    showQuestion() {
-        const that = this;
+    private showQuestion(): void {
+        if (!this.quiz) return;
 
-        const activeQuestion = this.quiz.questions[this.currentQuestionIndex - 1];
-        this.testQuestionTitle.innerHTML = `<span class="text_purple">Вопрос ${this.currentQuestionIndex}: </span> ${activeQuestion.question}`;
+        const that: Test = this;
 
-        this.answerOptions.innerHTML = '';
+        const activeQuestion: QuizQuestionType = this.quiz.questions[this.currentQuestionIndex - 1];
+        if (this.testQuestionTitle) {
+            this.testQuestionTitle.innerHTML = `<span class="text_purple">Вопрос ${this.currentQuestionIndex}: </span> ${activeQuestion.question}`;
+        }
 
-        const chosenOption = this.userResult.find(item => item.questionId === activeQuestion.id);
-        activeQuestion.answers.forEach(answerItem => {
-            const answerOptionsItem = document.createElement('div');
+        if (this.answerOptions) {
+            this.answerOptions.innerHTML = '';
+        }
+
+        if (!this.userResult) return;
+
+        const chosenOption: UserResultType | undefined = this.userResult.find((item: UserResultType) => item.questionId === activeQuestion.id);
+
+        activeQuestion.answers.forEach((answerItem: QuizAnswersType) => {
+            const answerOptionsItem: HTMLElement | null = document.createElement('div');
             answerOptionsItem.className = 'options-item';
 
             const inputId = 'answer-' + answerItem.id;
-            const answerRadioButton = document.createElement('input');
+            const answerRadioButton: HTMLElement | null = document.createElement('input');
             answerRadioButton.className = 'test__answer-options-marker';
             answerRadioButton.setAttribute('type', 'radio');
             answerRadioButton.setAttribute('id', inputId);
             answerRadioButton.setAttribute('name', 'answer');
-            answerRadioButton.setAttribute('value', answerItem.id);
+            answerRadioButton.setAttribute('value', answerItem.id.toString());
 
             if (chosenOption && chosenOption.chosenAnswerId === answerItem.id) {
                 answerRadioButton.setAttribute('checked', 'checked');
@@ -99,84 +147,103 @@ export class Test {
                 that.disablerPassLink();
             }
 
-            const answerLabel = document.createElement('label');
+            const answerLabel: HTMLElement | null = document.createElement('label');
             answerLabel.className = 'test__answer-options-text';
             answerLabel.setAttribute('for', inputId);
             answerLabel.innerText = answerItem.answer;
 
             answerOptionsItem.appendChild(answerRadioButton);
             answerOptionsItem.appendChild(answerLabel);
-            this.answerOptions.appendChild(answerOptionsItem);
+
+            if (this.answerOptions) {
+                this.answerOptions.appendChild(answerOptionsItem);
+            }
         });
 
-        if (chosenOption && chosenOption.chosenAnswerId) {
-            this.nextButtonElement.removeAttribute('disabled');
+        if (this.nextButtonElement && this.passLinkElement) {
+            if (chosenOption && chosenOption.chosenAnswerId) {
+                this.nextButtonElement.removeAttribute('disabled');
+                this.passLinkElement.classList.add('disabled-link');
+            } else {
+                this.nextButtonElement.setAttribute('disabled', 'disabled');
+                this.passLinkElement.classList.remove('disabled-link');
+            }
+
+            if (this.currentQuestionIndex === this.quiz.questions.length) {
+                this.nextButtonElement.innerText = "Завершить";
+            } else {
+                this.nextButtonElement.innerText = "Далее";
+            }
+        }
+
+        if (this.prevButtonElement) {
+            if (this.currentQuestionIndex > 1) {
+                this.prevButtonElement.removeAttribute('disabled');
+            } else {
+                this.prevButtonElement.setAttribute('disabled', 'disabled');
+            }
+        }
+    }
+
+    private disablerPassLink(): void {
+        if (this.passLinkElement) {
             this.passLinkElement.classList.add('disabled-link');
-        } else {
-            this.nextButtonElement.setAttribute('disabled', 'disabled');
-            this.passLinkElement.classList.remove('disabled-link');
         }
-
-        if (this.currentQuestionIndex === this.quiz.questions.length) {
-            this.nextButtonElement.innerText = "Завершить";
-        } else {
-            this.nextButtonElement.innerText = "Далее";
-        }
-
-        if (this.currentQuestionIndex > 1) {
-            this.prevButtonElement.removeAttribute('disabled');
-        } else {
-            this.prevButtonElement.setAttribute('disabled', 'disabled');
-        }
-
     }
 
-    disablerPassLink() {
-        this.passLinkElement.classList.add('disabled-link');
+    private choseAnswer(): void {
+        if (this.nextButtonElement) {
+            this.nextButtonElement.removeAttribute('disabled');
+        }
     }
 
-    choseAnswer() {
-        this.nextButtonElement.removeAttribute('disabled');
-    }
+    private prepareProgressBar(): void {
+        if (!this.quiz) return;
 
-    prepareProgressBar() {
         this.quiz.questions.forEach((item, index) => {
-            const progressBarItem = document.createElement('div');
+            const progressBarItem: HTMLElement | null = document.createElement('div');
             progressBarItem.className = 'test__progress-bar-item ' + (index === 0 ? 'active' : '');
 
-            const progressBarItemCircle = document.createElement('div');
+            const progressBarItemCircle: HTMLElement | null = document.createElement('div');
             progressBarItemCircle.className = 'test__progress-bar-item-circle';
 
-            const progressBarItemText = document.createElement('div');
+            const progressBarItemText: HTMLElement | null = document.createElement('div');
             progressBarItemText.className = 'test__progress-bar-item-text';
             progressBarItemText.innerText = `Вопрос ${index + 1}`;
 
             progressBarItem.appendChild(progressBarItemCircle);
             progressBarItem.appendChild(progressBarItemText);
-            this.progressBarElement.appendChild(progressBarItem);
+
+            if (this.progressBarElement) {
+                this.progressBarElement.appendChild(progressBarItem);
+            }
         });
     }
 
-    move(action) {
-        const chosenAnswer = Array.from(document.getElementsByClassName('test__answer-options-marker')).find(element => element.checked)
-        const activeQuestion = this.quiz.questions[this.currentQuestionIndex - 1];
+    private move(action: ActionTestType): void {
+        if (!this.quiz || !this.userResult) return;
 
-        let chosenAnswerId = null;
+        const chosenAnswer: HTMLInputElement | undefined = Array.from(document.getElementsByClassName('test__answer-options-marker')).find(element => (element as HTMLInputElement).checked) as HTMLInputElement;
+        const activeQuestion: QuizQuestionType = this.quiz.questions[this.currentQuestionIndex - 1];
+
+        let chosenAnswerId: number | null = null;
         if (chosenAnswer && chosenAnswer.value) {
             chosenAnswerId = Number(chosenAnswer.value);
         }
 
-        const existingResult = this.userResult.find(item => item.questionId === activeQuestion.id);
-        if (existingResult) {
-            existingResult.chosenAnswerId = chosenAnswerId;
-        } else {
-            this.userResult.push({
-                questionId: activeQuestion.id,
-                chosenAnswerId: chosenAnswerId
-            });
+        const existingResult: UserResultType | undefined = this.userResult.find((item: UserResultType) => item.questionId === activeQuestion.id);
+        if (chosenAnswerId) {
+            if (existingResult) {
+                existingResult.chosenAnswerId = chosenAnswerId;
+            } else {
+                this.userResult.push({
+                    questionId: activeQuestion.id,
+                    chosenAnswerId: chosenAnswerId
+                });
+            }
         }
 
-        if (action === 'next' || action === 'pass') {
+        if (action === ActionTestType.next || action === ActionTestType.pass) {
             this.currentQuestionIndex++;
         } else {
             this.currentQuestionIndex--;
@@ -188,37 +255,40 @@ export class Test {
             return;
         }
 
-        Array.from(this.progressBarElement.children).forEach((item, index) => {
-            const currentItemIndex = index + 1;
-            item.classList.remove('active');
-            item.classList.remove('complite');
+        if (this.progressBarElement) {
+            Array.from(this.progressBarElement.children).forEach((item: Element, index: number) => {
+                const currentItemIndex: number = index + 1;
+                item.classList.remove('active');
+                item.classList.remove('complite');
 
-            if (currentItemIndex === this.currentQuestionIndex) {
-                item.classList.add('active');
-            } else {
-                if (currentItemIndex < this.currentQuestionIndex) {
-                    item.classList.add('complite');
+                if (currentItemIndex === this.currentQuestionIndex) {
+                    item.classList.add('active');
+                } else {
+                    if (currentItemIndex < this.currentQuestionIndex) {
+                        item.classList.add('complite');
+                    }
                 }
-            }
-        });
+            });
+        }
 
         this.showQuestion();
     }
 
-    async complete() {
-        const userInfo = Auth.getUserInfo();
-        if(!userInfo){
+    private async complete(): Promise<void> {
+        const userInfo: UserInfoType | null = Auth.getUserInfo();
+        if (!userInfo) {
             location.href = '#/';
+            return;
         }
 
         try {
-            const result = await CustomHttp.request(config.host + '/tests/' + this.testId + '/pass', 'POST', {
+            const result: DefaultResponseType | PassTestResponseType = await CustomHttp.request(config.host + '/tests/' + this.testId + '/pass', 'POST', {
                 userId: userInfo.userId,
                 results: this.userResult
             });
             if (result) {
-                if (result.error) {
-                    throw new Error(result.error);
+                if ((result as DefaultResponseType).error !== undefined) {
+                    throw new Error((result as DefaultResponseType).message);
                 }
                 location.href = '#/result?id=' + this.testId;
             }

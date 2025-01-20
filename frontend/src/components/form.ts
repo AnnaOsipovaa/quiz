@@ -1,15 +1,23 @@
-import { Auth } from '../services/auth.js';
-import { CustomHttp } from '../services/custom-http.js';
-import config from "../../config/config.js";
+import { Auth } from '../services/auth';
+import { CustomHttp } from '../services/custom-http';
+import config from "../../config/config";
+import { FormFielType } from '../types/form-fiel.type';
+import { SignupResponseType } from '../types/signup-response.type';
+import { LoginResponseType } from '../types/login-response.type';
 
 export class Form {
-    constructor(page) {
+    readonly agreeElement: HTMLInputElement | null;
+    readonly processElement: HTMLElement | null;
+    readonly page: 'signup' | 'login';
+    readonly fields: FormFielType[] = [];
+
+    constructor(page: 'signup' | 'login') {
         this.agreeElement = null;
         this.processElement = null;
         this.page = page;
 
-        const accessToken = localStorage.getItem(Auth.accessTokenKey);
-        if(accessToken){
+        const accessToken: string | null = localStorage.getItem(Auth.accessTokenKey);
+        if (accessToken) {
             location.href = '#/choice';
             return;
         }
@@ -50,99 +58,108 @@ export class Form {
             );
         }
 
-        const that = this;
+        const that: Form = this;
 
-        this.fields.forEach(item => {
-            item.element = document.getElementById(item.id);
-            item.element.onchange = function () {
-                that.validateField.call(that, item, this);
+        this.fields.forEach((item: FormFielType) => {
+            item.element = document.getElementById(item.id) as HTMLInputElement;
+            if (item.element) {
+                item.element.onchange = function () {
+                    that.validateField.call(that, item, this as HTMLInputElement);
+                }
             }
         })
 
         this.processElement = document.getElementById('process');
-        this.processElement.onclick = function () {
-            that.processForm();
+        if (this.processElement) {
+            this.processElement.onclick = function () {
+                that.processForm();
+            }
         }
 
         if (this.page === 'signup') {
-            this.agreeElement = document.getElementById('site-rules');
-            this.agreeElement.onchange = function () {
-                that.validateForm();
+            this.agreeElement = document.getElementById('site-rules') as HTMLInputElement;
+            if (this.agreeElement) {
+                this.agreeElement.onchange = function () {
+                    that.validateForm();
+                }
             }
         }
     }
 
-    validateField(field, element) {
-        if (!element.value || !element.value.match(field.regex)) {
-            element.parentNode.style.borderColor = 'red';
-            field.valid = false;
-        } else {
-            element.parentNode.style.borderColor = '';
-            field.valid = true;
+    private validateField(field: FormFielType, element: HTMLInputElement): void {
+        if (element.parentNode) {
+            if (!element.value || !element.value.match(field.regex)) {
+                (element.parentNode as HTMLElement).style.borderColor = 'red';
+                field.valid = false;
+            } else {
+                (element.parentNode as HTMLElement).style.borderColor = '';
+                field.valid = true;
+            }
         }
         this.validateForm();
     }
 
-    validateForm() {
-        const validForm = this.fields.every(item => item.valid);
-        const isValid = this.agreeElement ? this.agreeElement.checked && validForm : validForm;
-        if (isValid) {
-            this.processElement.removeAttribute('disabled');
-        } else {
-            this.processElement.setAttribute('disabled', 'disabled');
+    private validateForm(): boolean {
+        const validForm: boolean = this.fields.every((item: FormFielType) => item.valid);
+        const isValid: boolean = this.agreeElement ? this.agreeElement.checked && validForm : validForm;
+        if (this.processElement) {
+            if (isValid) {
+                this.processElement.removeAttribute('disabled');
+            } else {
+                this.processElement.setAttribute('disabled', 'disabled');
+            }
         }
         return isValid
     }
 
-    async processForm() {
+    private async processForm(): Promise<void> {
         if (this.validateForm()) {
-            const email = this.fields.find(item => item.name === 'email').element.value;
-            const password = this.fields.find(item => item.name === 'password').element.value;
-            
-            if (this.page === 'signup') {
+            const email: string | undefined = this.fields.find((item: FormFielType) => item.name === 'email')?.element?.value;
+            const password: string | undefined = this.fields.find(item => item.name === 'password')?.element?.value;
+
+            if(email && password){
+                if (this.page === 'signup') {
+                    try {
+                        const result: SignupResponseType = await CustomHttp.request(config.host + '/signup', 'POST', {
+                            name: this.fields.find(item => item.name === 'name')?.element?.value,
+                            lastName: this.fields.find(item => item.name === 'lastName')?.element?.value,
+                            email: email,
+                            password: password
+                        });
+    
+                        if (result) {
+                            if (result.error || !result.user) {
+                                throw new Error(result.message);
+                            }
+                        }
+                    } catch (error) {
+                        console.log(error);
+                        return;
+                    }
+                }
+    
                 try {
-                    const body = {
-                        name: this.fields.find(item => item.name === 'name').element.value,
-                        lastName: this.fields.find(item => item.name === 'lastName').element.value,
+                    const result: LoginResponseType = await CustomHttp.request(config.host + '/login', 'POST', {
                         email: email,
                         password: password
-                    };
-
-                    const result = await CustomHttp.request(config.host + '/signup', 'POST', body);
-
+                    });
+    
                     if (result) {
-                        if (result.error || !result.user) {
-                            throw new Error(response.message);
+                        if (result.error || !result.accessToken || !result.refreshToken || !result.fullName || !result.userId) {
+                            throw new Error(result.message);
                         }
+                        
+                        Auth.setTokens(result.accessToken, result.refreshToken);
+                        Auth.setUserInfo({
+                            fullName: result.fullName,
+                            userId: result.userId,
+                            email: email
+                        });
+                        location.href = '#/choice';
                     }
                 } catch (error) {
-                    return console.log(error);
+                    console.log(error);
                 }
-            }
-
-            try {
-                const body = {
-                    email: email,
-                    password: password
-                };
-
-                const result = await CustomHttp.request(config.host + '/login', 'POST', body);
-
-                if (result) {
-                    if (result.error || !result.accessToken || !result.refreshToken || !result.fullName || !result.userId) {
-                        throw new Error(response.message);
-                    }
-
-                    Auth.setTokens(result.accessToken, result.refreshToken);
-                    Auth.setUserInfo({
-                        fullName: result.fullName,
-                        userId: result.userId,
-                        email: email
-                    });
-                    location.href = '#/choice';
-                }
-            } catch (error) {
-                console.log(error);
             }
         }
     }

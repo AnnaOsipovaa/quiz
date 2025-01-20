@@ -1,28 +1,41 @@
-import { CustomHttp } from '../services/custom-http.js';
-import config from "../../config/config.js";
-import { Auth } from '../services/auth.js';
-import { UrlManager } from '../utils/url-manager.js';
+import { CustomHttp } from '../services/custom-http';
+import config from "../../config/config";
+import { Auth } from '../services/auth';
+import { UrlManager } from '../utils/url-manager';
+import { UserInfoType } from '../types/user-info.type';
+import { DefaultResponseType } from '../types/default-response.type';
+import { TestResultType } from '../types/test-result.type';
 
 export class Result {
+    readonly testId: string | null;
+
     constructor() {
         this.testId = UrlManager.getQueryParams('id');
-        document.getElementById('answersLink').onclick = this.checkAnswers.bind(this);
+        (document.getElementById('answersLink') as HTMLElement).onclick = this.checkAnswers.bind(this);
         this.init();
     }
 
-    async init() {
+    private async init(): Promise<void> {
         if (this.testId) {
-            const userInfo = Auth.getUserInfo();
+            const userInfo: UserInfoType | null = Auth.getUserInfo();
+
             if (!userInfo) {
                 location.href = '#/';
+                return;
             }
+
             try {
-                const result = await CustomHttp.request(config.host + '/tests/' + this.testId + '/result?userId=' + userInfo.userId);
+                const result: DefaultResponseType | TestResultType = await CustomHttp.request(config.host + '/tests/' + this.testId + '/result?userId=' + userInfo.userId);
                 if (result) {
-                    if (result.error) {
-                        throw new Error(result.error);
+                    if ((result as DefaultResponseType).error !== undefined) {
+                        throw new Error((result as DefaultResponseType).message);
                     }
-                    document.getElementById('result').innerHTML = result.score + '/' + result.total;
+
+                    const resultElement: HTMLElement | null = document.getElementById('result');
+
+                    if (resultElement) {
+                        resultElement.innerHTML = (result as TestResultType).score + '/' + (result as TestResultType).total;
+                    }
                     return;
                 }
             } catch (error) {
@@ -32,7 +45,7 @@ export class Result {
         location.href = '#/';
     }
 
-    checkAnswers() {
+    private checkAnswers(): void {
         location.href = '#/answers?id=' + this.testId;
     }
 }
