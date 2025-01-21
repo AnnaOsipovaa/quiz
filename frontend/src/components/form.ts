@@ -134,6 +134,8 @@ export class Form {
                         }
                     } catch (error) {
                         console.log(error);
+                        alert('Произошла ошибка поавторите попытку позже.');
+                        location.href = '#/';
                         return;
                     }
                 }

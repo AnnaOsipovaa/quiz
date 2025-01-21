@@ -12,7 +12,7 @@ import { PassTestResponseType } from '../types/pass-test-pesponse.type';
 export class Test {
     private quiz: QuizType | null;
     private answerOptions: HTMLElement | null;
-    readonly userResult: UserResultType[] | null;
+    readonly userResult: UserResultType[];
     private testTitleElement: HTMLElement | null;
     private testQuestionTitle: HTMLElement | null;
     private currentQuestionIndex: number;
@@ -32,7 +32,7 @@ export class Test {
         this.nextButtonElement = null;
         this.prevButtonElement = null;
         this.passLinkElement = null;
-        this.userResult = null;
+        this.userResult = [];
         this.progressBarElement = null;
         this.testId = UrlManager.getQueryParams('id');
         this.init();
@@ -122,9 +122,10 @@ export class Test {
             this.answerOptions.innerHTML = '';
         }
 
-        if (!this.userResult) return;
-
-        const chosenOption: UserResultType | undefined = this.userResult.find((item: UserResultType) => item.questionId === activeQuestion.id);
+        let chosenOption: UserResultType | undefined;
+        if (this.userResult) {
+            chosenOption = this.userResult.find((item: UserResultType) => item.questionId === activeQuestion.id);
+        }
 
         activeQuestion.answers.forEach((answerItem: QuizAnswersType) => {
             const answerOptionsItem: HTMLElement | null = document.createElement('div');
@@ -160,13 +161,15 @@ export class Test {
             }
         });
 
-        if (this.nextButtonElement && this.passLinkElement) {
-            if (chosenOption && chosenOption.chosenAnswerId) {
-                this.nextButtonElement.removeAttribute('disabled');
-                this.passLinkElement.classList.add('disabled-link');
-            } else {
-                this.nextButtonElement.setAttribute('disabled', 'disabled');
-                this.passLinkElement.classList.remove('disabled-link');
+        if (this.nextButtonElement) {
+            if(this.passLinkElement){
+                if (chosenOption && chosenOption.chosenAnswerId) {
+                    this.nextButtonElement.removeAttribute('disabled');
+                    this.passLinkElement.classList.add('disabled-link');
+                } else {
+                    this.nextButtonElement.setAttribute('disabled', 'disabled');
+                    this.passLinkElement.classList.remove('disabled-link');
+                }
             }
 
             if (this.currentQuestionIndex === this.quiz.questions.length) {
@@ -221,7 +224,7 @@ export class Test {
     }
 
     private move(action: ActionTestType): void {
-        if (!this.quiz || !this.userResult) return;
+        if (!this.quiz) return;
 
         const chosenAnswer: HTMLInputElement | undefined = Array.from(document.getElementsByClassName('test__answer-options-marker')).find(element => (element as HTMLInputElement).checked) as HTMLInputElement;
         const activeQuestion: QuizQuestionType = this.quiz.questions[this.currentQuestionIndex - 1];

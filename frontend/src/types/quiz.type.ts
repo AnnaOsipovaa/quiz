@@ -1,3 +1,7 @@
+export type QuizTestType = {
+    test: QuizType
+}
+
 export type QuizType = {
     error?: boolean,
     message?: string,
@@ -9,10 +13,11 @@ export type QuizType = {
 export type QuizQuestionType = {
     id: number,
     question: string,
-    answers: [{ id: number, answer: string }]
+    answers: QuizAnswersType[]
 }
 
 export type QuizAnswersType = {
     id: number,
-    answer: string
+    answer: string,
+    correct?: boolean
 }

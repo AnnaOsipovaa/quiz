@@ -2,10 +2,9 @@ import { CustomHttp } from '../services/custom-http';
 import config from "../../config/config";
 import { Auth } from '../services/auth';
 import { UrlManager } from '../utils/url-manager';
-import { QuizType } from '../types/quiz.type';
+import { QuizTestType, QuizType } from '../types/quiz.type';
 import { UserInfoType } from '../types/user-info.type';
 import { DefaultResponseType } from '../types/default-response.type';
-import { TestResultDetailedType } from '../types/test-result-detailed.type';
 
 export class Answers {
     private quiz: QuizType | null;
@@ -32,14 +31,13 @@ export class Answers {
                 return;
             }
             try {
-                const result: DefaultResponseType | TestResultDetailedType = await CustomHttp.request(config.host + '/tests/' + this.testId + '/result/details?userId=' + userInfo.userId);
+                const result: DefaultResponseType | QuizTestType = await CustomHttp.request(config.host + '/tests/' + this.testId + '/result/details?userId=' + userInfo.userId);
                 if (result) {
                     if ((result as DefaultResponseType).error !== undefined) {
                         throw new Error((result as DefaultResponseType).message);
                     }
-                    console.log(result);
-                    /*
-                    this.quiz = (result as TestResultDetailedType).test;
+                    
+                    this.quiz = (result as QuizTestType).test;
 
                     const whoCompletedElement = document.getElementById('whoCompleted');
                     if (whoCompletedElement) {
@@ -52,7 +50,7 @@ export class Answers {
                     }
 
                     this.showRightAnswer();
-                    return;*/
+                    return;
                 }
             } catch (error) {
                 console.log(error);
@@ -62,7 +60,6 @@ export class Answers {
     }
 
     private showRightAnswer(): void {
-        /*
         if(!this.quiz) return;
 
         const answersItems: HTMLElement | null = document.getElementById('answersItems');
@@ -110,7 +107,6 @@ export class Answers {
                 answersItems.appendChild(questionElement);
             }
         });
-        */
     }
 
     checkResult() {
